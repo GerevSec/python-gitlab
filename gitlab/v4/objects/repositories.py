@@ -135,6 +135,15 @@ class RepositoryMixin:
         query_data = {"from": from_, "to": to}
         return self.manager.gitlab.http_get(path, query_data=query_data, **kwargs)
 
+    @cli.register_custom_action("Project", ("from_", "to"))
+    @exc.on_http_error(exc.GitlabGetError)
+    def merge_base(self, from_, to, **kwargs):
+        """Return a diff between two branches/commits.
+
+        Args:
+            from_(str): Source branch/SHA
+            to(str): Destination branch/SHA
+            **kwargs: Extra options to send to the server (e.g. sudo)
 
         Raises:
             GitlabAuthenticationError: If authentication is not correct
